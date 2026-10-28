@@ -9,6 +9,8 @@ destroyed repeatably.
 
 **Live demo:** [https://d3ujlt4nmaiwzc.cloudfront.net](https://d3ujlt4nmaiwzc.cloudfront.net)
 
+![Café 53 live serverless ordering interface](docs/images/cafe-53-live.png)
+
 The `dev` environment is deployed in `us-east-1`. See
 [docs/deployment.md](docs/deployment.md) for verification evidence.
 
