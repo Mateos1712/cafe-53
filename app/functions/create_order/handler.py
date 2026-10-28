@@ -43,6 +43,22 @@ def lambda_handler(event, _context):
     if route_key == "GET /health":
         return response(200, {"service": "cafe-53", "status": "healthy"})
 
+    if route_key == "GET /orders":
+        result = table.scan(
+            ProjectionExpression="orderId, createdAt, processedAt, #status, #item, #size",
+            ExpressionAttributeNames={
+                "#status": "status",
+                "#item": "item",
+                "#size": "size",
+            },
+        )
+        orders = sorted(
+            result.get("Items", []),
+            key=lambda order: order.get("createdAt", ""),
+            reverse=True,
+        )[:20]
+        return response(200, {"orders": orders, "count": len(orders)})
+
     if route_key == "GET /orders/{orderId}":
         order_id = (event.get("pathParameters") or {}).get("orderId", "").strip()
         if not order_id:

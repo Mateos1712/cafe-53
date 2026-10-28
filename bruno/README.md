@@ -7,6 +7,7 @@
 5. Run **Health**.
 6. Run **Create order**. Its post-response script saves the returned `orderId`.
 7. Wait two seconds and run **Get order status**.
+8. Run **List recent orders** to inspect the public, privacy-safe history.
 
 The final request should return `READY`. The collection contains no credentials;
 the API URL is the only environment-specific value.

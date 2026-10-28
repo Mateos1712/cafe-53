@@ -43,6 +43,16 @@ button:hover { filter: brightness(1.08); }
 button:disabled { opacity: .55; cursor: wait; }
 .result { display: none; margin-top: 1rem; padding: 1rem; background: #120b08; border-left: 4px solid var(--orange); }
 .result:not(:empty) { display: block; }
+.orders { margin-top: 1.5rem; }
+.secondary-button { width: auto; margin: 0; padding: .7rem 1rem; background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.privacy-note, .empty-state { color: var(--muted); }
+.orders-list { display: grid; gap: .65rem; }
+.order-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; background: #120b08; border: 1px solid var(--line); }
+.order-row div { display: grid; gap: .3rem; }
+.order-row span { color: var(--muted); font-size: .82rem; }
+.order-status { border: 1px solid var(--line); border-radius: 999px; padding: .4rem .65rem; font-weight: 800; letter-spacing: .04em; }
+.order-status--ready { color: #8ee7a8 !important; border-color: #397a4b; }
+.order-status--received { color: #ffbf7a !important; border-color: #9a5c26; }
 .journey { margin-top: 1.5rem; }
 .journey ol { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); }
 .journey li { display: grid; gap: .3rem; background: var(--panel); padding: 1rem; }

@@ -44,7 +44,8 @@ data "aws_iam_policy_document" "create_order" {
     sid = "WriteOrders"
     actions = [
       "dynamodb:GetItem",
-      "dynamodb:PutItem"
+      "dynamodb:PutItem",
+      "dynamodb:Scan"
     ]
     resources = [aws_dynamodb_table.orders.arn]
   }
@@ -129,6 +130,12 @@ resource "aws_apigatewayv2_route" "health" {
 resource "aws_apigatewayv2_route" "get_order" {
   api_id    = aws_apigatewayv2_api.orders.id
   route_key = "GET /orders/{orderId}"
+  target    = "integrations/${aws_apigatewayv2_integration.create_order.id}"
+}
+
+resource "aws_apigatewayv2_route" "list_orders" {
+  api_id    = aws_apigatewayv2_api.orders.id
+  route_key = "GET /orders"
   target    = "integrations/${aws_apigatewayv2_integration.create_order.id}"
 }
 

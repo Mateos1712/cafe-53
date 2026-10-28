@@ -15,6 +15,8 @@
    the dead-letter queue after the configured receive count.
 8. The browser polls `GET /orders/{orderId}` until the asynchronous result is
    visible.
+9. The recent-orders panel calls `GET /orders`; this public response deliberately
+   omits customer names because the learning API has no authentication yet.
 
 ## Design decisions
 

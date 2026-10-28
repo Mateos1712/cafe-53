@@ -2,6 +2,8 @@ const apiUrl = (window.CAFE53_CONFIG?.apiUrl || "").replace(/\/$/, "");
 const statusElement = document.querySelector("#api-status");
 const form = document.querySelector("#order-form");
 const result = document.querySelector("#result");
+const ordersList = document.querySelector("#orders-list");
+const refreshOrdersButton = document.querySelector("#refresh-orders");
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -26,6 +28,48 @@ async function checkHealth() {
     statusElement.textContent = response.ok ? "API disponible" : "API con incidencias";
   } catch {
     statusElement.textContent = "API sin conexion";
+  }
+}
+
+function formatDate(value) {
+  if (!value) return "Sin fecha";
+  return new Intl.DateTimeFormat("es-MX", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
+function renderOrders(orders) {
+  if (!orders.length) {
+    ordersList.innerHTML = '<p class="empty-state">Todavía no hay órdenes.</p>';
+    return;
+  }
+
+  ordersList.innerHTML = orders.map((order) => `
+    <article class="order-row">
+      <div>
+        <strong>${order.item || "Pedido de café"}</strong>
+        <span>${order.size || "—"} · ${formatDate(order.createdAt)}</span>
+      </div>
+      <span class="order-status order-status--${(order.status || "unknown").toLowerCase()}">
+        ${order.status || "UNKNOWN"}
+      </span>
+    </article>
+  `).join("");
+}
+
+async function loadOrders() {
+  if (!apiUrl) return;
+  refreshOrdersButton.disabled = true;
+  try {
+    const response = await fetch(`${apiUrl}/orders`);
+    if (!response.ok) throw new Error("No se pudo cargar el historial");
+    const body = await response.json();
+    renderOrders(body.orders || []);
+  } catch (error) {
+    ordersList.innerHTML = `<p class="empty-state">${error.message}</p>`;
+  } finally {
+    refreshOrdersButton.disabled = false;
   }
 }
 
@@ -54,6 +98,7 @@ form.addEventListener("submit", async (event) => {
     result.textContent = completedOrder
       ? `¡${completedOrder.item} listo! Pedido ${body.orderId}: READY.`
       : `Pedido ${body.orderId} recibido. Consulta su estado en unos segundos.`;
+    await loadOrders();
     form.reset();
   } catch (error) {
     result.textContent = error.message;
@@ -62,5 +107,7 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+refreshOrdersButton.addEventListener("click", loadOrders);
 checkHealth();
+loadOrders();
 

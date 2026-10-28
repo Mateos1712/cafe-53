@@ -57,8 +57,22 @@
         <output id="result" class="result" aria-live="polite"></output>
       </section>
 
+      <section class="orders card" aria-labelledby="orders-title">
+        <div class="card-heading">
+          <div>
+            <p class="step">02 / OBSERVA LA COLA</p>
+            <h2 id="orders-title">Órdenes recientes</h2>
+          </div>
+          <button type="button" class="secondary-button" id="refresh-orders">Actualizar</button>
+        </div>
+        <p class="privacy-note">La demo muestra los últimos 20 pedidos sin publicar nombres de clientes.</p>
+        <div id="orders-list" class="orders-list" aria-live="polite">
+          <p class="empty-state">Cargando órdenes...</p>
+        </div>
+      </section>
+
       <section class="journey" aria-labelledby="journey-title">
-        <p class="step">02 / SIGUE EL EVENTO</p>
+        <p class="step">03 / SIGUE EL EVENTO</p>
         <h2 id="journey-title">El recorrido de cada taza</h2>
         <ol>
           <li><strong>API Gateway</strong><span>recibe</span></li>

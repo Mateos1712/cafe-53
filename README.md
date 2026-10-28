@@ -39,7 +39,7 @@ See [docs/architecture.md](docs/architecture.md) for the request flow and
 ## What this first version includes
 
 - S3 private bucket for the frontend, served only through CloudFront.
-- API Gateway HTTP API with `POST /orders` and `GET /health`.
+- API Gateway HTTP API with `POST /orders`, `GET /orders` and `GET /health`.
 - `GET /orders/{orderId}` for observing the asynchronous result.
 - Python Lambda that validates and stores orders in DynamoDB.
 - Custom EventBridge bus and rule for `OrderCreated` events.
@@ -92,6 +92,7 @@ See [bruno/README.md](bruno/README.md) for the exact steps.
 | --- | --- | --- |
 | `GET` | `/health` | Verify API and Lambda availability |
 | `POST` | `/orders` | Validate, store and publish a new order |
+| `GET` | `/orders` | List the 20 most recent orders without customer names |
 | `GET` | `/orders/{orderId}` | Read the current DynamoDB order state |
 
 ## Deploy when ready
@@ -115,7 +116,8 @@ frontend receives the API URL through a generated `config.js` object.
 
 ## Suggested study workflow
 
-1. Read the service comparison in `docs/clf-c02-map.md`.
+1. Read the service comparison in `docs/clf-c02-map.md` and the Spanish recap
+   in `docs/aws-learning-recap.md`.
 2. Run `terraform plan` and identify every planned AWS service.
 3. Apply the environment only after reviewing estimated cost and IAM changes.
 4. Place a test order and follow it through API Gateway, Lambda, DynamoDB,

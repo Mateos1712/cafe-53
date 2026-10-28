@@ -9,6 +9,22 @@ class FakeTable:
     def get_item(self, **_kwargs):
         return {}
 
+    def scan(self, **_kwargs):
+        return {
+            "Items": [
+                {
+                    "orderId": "older",
+                    "createdAt": "2026-01-01T00:00:00+00:00",
+                    "status": "READY",
+                },
+                {
+                    "orderId": "newer",
+                    "createdAt": "2026-01-02T00:00:00+00:00",
+                    "status": "RECEIVED",
+                },
+            ]
+        }
+
 
 fake_boto3 = types.SimpleNamespace(
     resource=lambda _name: types.SimpleNamespace(Table=lambda _table: FakeTable()),
@@ -61,6 +77,14 @@ class ValidateOrderTests(unittest.TestCase):
             None,
         )
         self.assertEqual(result["statusCode"], 404)
+
+    def test_list_orders_returns_newest_first(self):
+        result = handler.lambda_handler({"routeKey": "GET /orders"}, None)
+        body = __import__("json").loads(result["body"])
+
+        self.assertEqual(result["statusCode"], 200)
+        self.assertEqual(body["count"], 2)
+        self.assertEqual(body["orders"][0]["orderId"], "newer")
 
 
 if __name__ == "__main__":
