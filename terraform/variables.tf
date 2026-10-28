@@ -38,6 +38,17 @@ variable "monthly_budget_usd" {
   }
 }
 
+variable "budget_alert_email" {
+  description = "Email address that receives AWS Budget notifications."
+  type        = string
+  sensitive   = true
+
+  validation {
+    condition     = can(regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", var.budget_alert_email))
+    error_message = "budget_alert_email must be a valid email address."
+  }
+}
+
 variable "enable_point_in_time_recovery" {
   description = "Enable DynamoDB point-in-time recovery for the learning environment."
   type        = bool

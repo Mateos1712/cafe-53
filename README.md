@@ -51,8 +51,9 @@ the environment online. The learning frontend bucket uses `force_destroy` so
 its disposable object versions do not prevent a complete lab teardown.
 
 CloudFront, API Gateway, Lambda, DynamoDB, EventBridge, SQS, SNS, S3 and
-CloudWatch can still generate charges. AWS Budgets notifies or reports spending;
-it does not automatically stop resources.
+CloudWatch can still generate charges. The account-level monthly budget sends a
+forecast alert at 80% and an actual-cost alert at 100%; AWS Budgets does not
+automatically stop resources.
 
 ## Prerequisites
 
