@@ -9,10 +9,12 @@
 4. The function validates the payload, writes the order to DynamoDB and emits an
    `OrderCreated` event to a custom EventBridge bus.
 5. An EventBridge rule sends matching events to SQS.
-6. The `process_order` Lambda consumes SQS messages and publishes a normalized
-   `OrderReady` notification to SNS.
+6. The `process_order` Lambda consumes SQS messages, updates DynamoDB to
+   `READY`, and publishes a normalized `OrderReady` notification to SNS.
 7. CloudWatch stores application logs. SQS moves repeatedly failing messages to
    the dead-letter queue after the configured receive count.
+8. The browser polls `GET /orders/{orderId}` until the asynchronous result is
+   visible.
 
 ## Design decisions
 

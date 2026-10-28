@@ -3,6 +3,19 @@ const statusElement = document.querySelector("#api-status");
 const form = document.querySelector("#order-form");
 const result = document.querySelector("#result");
 
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+async function waitForReady(orderId) {
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    await wait(1500);
+    const response = await fetch(`${apiUrl}/orders/${orderId}`);
+    if (!response.ok) continue;
+    const order = await response.json();
+    if (order.status === "READY") return order;
+  }
+  return null;
+}
+
 async function checkHealth() {
   if (!apiUrl) {
     statusElement.textContent = "API pendiente de desplegar";
@@ -36,7 +49,11 @@ form.addEventListener("submit", async (event) => {
     });
     const body = await response.json();
     if (!response.ok) throw new Error(body.message || "No se pudo crear el pedido");
-    result.textContent = `Pedido ${body.orderId} recibido. Estado: ${body.status}.`;
+    result.textContent = `Pedido ${body.orderId} recibido. Esperando preparación...`;
+    const completedOrder = await waitForReady(body.orderId);
+    result.textContent = completedOrder
+      ? `¡${completedOrder.item} listo! Pedido ${body.orderId}: READY.`
+      : `Pedido ${body.orderId} recibido. Consulta su estado en unos segundos.`;
     form.reset();
   } catch (error) {
     result.textContent = error.message;

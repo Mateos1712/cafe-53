@@ -7,9 +7,18 @@ import types
 import unittest
 
 
-fake_boto3 = types.SimpleNamespace(client=lambda _name: object())
+class FakeTable:
+    def update_item(self, **_kwargs):
+        return {}
+
+
+fake_boto3 = types.SimpleNamespace(
+    client=lambda _name: object(),
+    resource=lambda _name: types.SimpleNamespace(Table=lambda _table: FakeTable()),
+)
 sys.modules.setdefault("boto3", fake_boto3)
 os.environ.setdefault("TOPIC_ARN", "arn:aws:sns:us-east-1:123456789012:test")
+os.environ.setdefault("TABLE_NAME", "test-orders")
 
 module_path = pathlib.Path(__file__).with_name("handler.py")
 spec = importlib.util.spec_from_file_location("process_order_handler", module_path)

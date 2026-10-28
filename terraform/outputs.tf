@@ -33,3 +33,8 @@ output "notification_topic_arn" {
   value       = aws_sns_topic.order_ready.arn
 }
 
+output "cloudwatch_dashboard_name" {
+  description = "CloudWatch operations dashboard for Café 53."
+  value       = aws_cloudwatch_dashboard.cafe53.dashboard_name
+}
+

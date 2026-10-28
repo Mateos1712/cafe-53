@@ -1,0 +1,22 @@
+meta {
+  name: Get order status
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/orders/{{orderId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Order exists", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Order reached READY", function () {
+    expect(res.body.status).to.equal("READY");
+  });
+}
+

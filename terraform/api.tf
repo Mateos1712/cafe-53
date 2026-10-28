@@ -43,6 +43,7 @@ data "aws_iam_policy_document" "create_order" {
   statement {
     sid = "WriteOrders"
     actions = [
+      "dynamodb:GetItem",
       "dynamodb:PutItem"
     ]
     resources = [aws_dynamodb_table.orders.arn]
@@ -125,10 +126,32 @@ resource "aws_apigatewayv2_route" "health" {
   target    = "integrations/${aws_apigatewayv2_integration.create_order.id}"
 }
 
+resource "aws_apigatewayv2_route" "get_order" {
+  api_id    = aws_apigatewayv2_api.orders.id
+  route_key = "GET /orders/{orderId}"
+  target    = "integrations/${aws_apigatewayv2_integration.create_order.id}"
+}
+
+resource "aws_cloudwatch_log_group" "api_access" {
+  name              = "/aws/apigateway/${local.name_prefix}"
+  retention_in_days = var.log_retention_days
+}
+
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.orders.id
   name        = "$default"
   auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_access.arn
+    format = jsonencode({
+      requestId        = "$context.requestId"
+      routeKey         = "$context.routeKey"
+      status           = "$context.status"
+      responseLength   = "$context.responseLength"
+      integrationError = "$context.integrationErrorMessage"
+    })
+  }
 }
 
 resource "aws_lambda_permission" "api_gateway" {

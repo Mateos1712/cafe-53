@@ -1,0 +1,40 @@
+meta {
+  name: Create order
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/orders
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Bruno Tester",
+    "item": "Lambda Latte",
+    "size": "medium"
+  }
+}
+
+script:post-response {
+  if (res.status === 202 && res.body.orderId) {
+    bru.setEnvVar("orderId", res.body.orderId);
+  }
+}
+
+tests {
+  test("Order is accepted", function () {
+    expect(res.status).to.equal(202);
+  });
+
+  test("Response includes an order ID", function () {
+    expect(res.body.orderId).to.be.a("string");
+  });
+}
+

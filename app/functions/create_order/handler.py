@@ -43,6 +43,17 @@ def lambda_handler(event, _context):
     if route_key == "GET /health":
         return response(200, {"service": "cafe-53", "status": "healthy"})
 
+    if route_key == "GET /orders/{orderId}":
+        order_id = (event.get("pathParameters") or {}).get("orderId", "").strip()
+        if not order_id:
+            return response(400, {"message": "orderId is required"})
+
+        result = table.get_item(Key={"orderId": order_id}, ConsistentRead=True)
+        order = result.get("Item")
+        if not order:
+            return response(404, {"message": "order not found"})
+        return response(200, order)
+
     try:
         payload = json.loads(event.get("body") or "{}")
     except json.JSONDecodeError:

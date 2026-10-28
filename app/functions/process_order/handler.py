@@ -1,11 +1,14 @@
 import json
 import os
+from datetime import datetime, timezone
 
 import boto3
 
 
 sns = boto3.client("sns")
 topic_arn = os.environ["TOPIC_ARN"]
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(os.environ["TABLE_NAME"])
 
 
 def parse_eventbridge_message(record):
@@ -31,6 +34,15 @@ def lambda_handler(event, _context):
                 "size": order["size"],
                 "status": "READY",
             }
+            table.update_item(
+                Key={"orderId": order["orderId"]},
+                UpdateExpression="SET #status = :status, processedAt = :processed_at",
+                ExpressionAttributeNames={"#status": "status"},
+                ExpressionAttributeValues={
+                    ":status": "READY",
+                    ":processed_at": datetime.now(timezone.utc).isoformat(),
+                },
+            )
             sns.publish(
                 TopicArn=topic_arn,
                 Subject="Café 53 order ready",

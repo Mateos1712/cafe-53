@@ -6,7 +6,8 @@ import unittest
 
 
 class FakeTable:
-    pass
+    def get_item(self, **_kwargs):
+        return {}
 
 
 fake_boto3 = types.SimpleNamespace(
@@ -46,6 +47,20 @@ class ValidateOrderTests(unittest.TestCase):
         )
         self.assertIsNone(order)
         self.assertIn("customerName", error)
+
+    def test_health_route(self):
+        result = handler.lambda_handler({"routeKey": "GET /health"}, None)
+        self.assertEqual(result["statusCode"], 200)
+
+    def test_missing_order_returns_404(self):
+        result = handler.lambda_handler(
+            {
+                "routeKey": "GET /orders/{orderId}",
+                "pathParameters": {"orderId": "missing"},
+            },
+            None,
+        )
+        self.assertEqual(result["statusCode"], 404)
 
 
 if __name__ == "__main__":

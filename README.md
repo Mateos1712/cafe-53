@@ -38,13 +38,16 @@ See [docs/architecture.md](docs/architecture.md) for the request flow and
 
 - S3 private bucket for the frontend, served only through CloudFront.
 - API Gateway HTTP API with `POST /orders` and `GET /health`.
+- `GET /orders/{orderId}` for observing the asynchronous result.
 - Python Lambda that validates and stores orders in DynamoDB.
 - Custom EventBridge bus and rule for `OrderCreated` events.
 - SQS queue with a dead-letter queue and redrive policy.
 - Python worker Lambda subscribed to SQS.
 - SNS topic for order-ready events (no paid or personal subscription by default).
 - CloudWatch log groups with configurable retention.
+- CloudWatch operations dashboard and alarms for API, Lambda and DLQ failures.
 - AWS Budget resource, mandatory project tags, and conservative defaults.
+- Git-friendly Bruno collection with health, create and status requests.
 - Optional Route 53/custom-domain work documented for phase 2.
 
 ## Safety and cost
@@ -75,6 +78,19 @@ terraform -chdir=terraform init -backend=false
 terraform -chdir=terraform validate
 python -m unittest discover -s app/functions -p "test_*.py"
 ```
+
+## Test the API with Bruno
+
+Open the [`bruno`](bruno) directory as a collection in Bruno Desktop, choose the
+`Dev` environment and run the requests in numeric order. `Create order` stores
+the returned ID as an environment variable, so `Get order status` can reuse it.
+See [bruno/README.md](bruno/README.md) for the exact steps.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Verify API and Lambda availability |
+| `POST` | `/orders` | Validate, store and publish a new order |
+| `GET` | `/orders/{orderId}` | Read the current DynamoDB order state |
 
 ## Deploy when ready
 

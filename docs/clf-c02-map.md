@@ -14,7 +14,7 @@ cost models and common use cases.
 | Databases | DynamoDB on-demand table | When would RDS/Aurora be a better choice? |
 | Networking and delivery | API Gateway and CloudFront | How do Route 53 and CloudFront differ? |
 | Integration | EventBridge, SQS and SNS | Which service routes, buffers or fans out messages? |
-| Monitoring and audit | CloudWatch logs; CloudTrail planned | How do CloudWatch and CloudTrail differ? |
+| Monitoring and audit | CloudWatch logs, dashboard and alarms; CloudTrail planned | How do CloudWatch and CloudTrail differ? |
 | Encryption | S3, SQS, SNS and DynamoDB encryption | What is encryption at rest vs. in transit? |
 | Reliability | DLQ and DynamoDB PITR | What problem does each mechanism solve? |
 | Pricing | Serverless pay-per-use resources and AWS Budget | Why does a budget not enforce a hard spending limit? |

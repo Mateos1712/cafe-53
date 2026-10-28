@@ -58,6 +58,7 @@ data "aws_iam_policy_document" "orders_queue" {
       values   = [aws_cloudwatch_event_rule.order_created.arn]
     }
   }
+
 }
 
 resource "aws_sqs_queue_policy" "orders" {
@@ -105,6 +106,12 @@ data "aws_iam_policy_document" "process_order" {
   }
 
   statement {
+    sid       = "UpdateOrderStatus"
+    actions   = ["dynamodb:UpdateItem"]
+    resources = [aws_dynamodb_table.orders.arn]
+  }
+
+  statement {
     sid = "WriteLogs"
     actions = [
       "logs:CreateLogStream",
@@ -132,7 +139,8 @@ resource "aws_lambda_function" "process_order" {
 
   environment {
     variables = {
-      TOPIC_ARN = aws_sns_topic.order_ready.arn
+      TOPIC_ARN  = aws_sns_topic.order_ready.arn
+      TABLE_NAME = aws_dynamodb_table.orders.name
     }
   }
 

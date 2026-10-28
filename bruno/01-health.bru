@@ -1,0 +1,22 @@
+meta {
+  name: Health
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/health
+  body: none
+  auth: none
+}
+
+tests {
+  test("API responds with 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Service is healthy", function () {
+    expect(res.body.status).to.equal("healthy");
+  });
+}
+

@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "Café 53 API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
+
