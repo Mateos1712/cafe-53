@@ -7,6 +7,11 @@ The project intentionally favors managed, pay-per-use services and keeps every
 resource in Terraform so the environment can be created, inspected, and
 destroyed repeatably.
 
+**Live demo:** [https://d3ujlt4nmaiwzc.cloudfront.net](https://d3ujlt4nmaiwzc.cloudfront.net)
+
+The `dev` environment is deployed in `us-east-1`. See
+[docs/deployment.md](docs/deployment.md) for verification evidence.
+
 ## Architecture
 
 ```mermaid
@@ -75,10 +80,17 @@ python -m unittest discover -s app/functions -p "test_*.py"
 
 ```powershell
 Copy-Item terraform/terraform.tfvars.example terraform/terraform.tfvars
-terraform -chdir=terraform init
+Copy-Item terraform/backend.hcl.example terraform/backend.hcl
+terraform -chdir=terraform/bootstrap init
+terraform -chdir=terraform/bootstrap apply
+terraform -chdir=terraform init -backend-config=backend.hcl
 terraform -chdir=terraform plan -out cafe53.tfplan
 terraform -chdir=terraform apply cafe53.tfplan
 ```
+
+The bootstrap stack creates a private, encrypted and versioned S3 bucket for
+remote state. The main stack uses Terraform's native S3 lock file. Bootstrap
+state remains local and the state bucket is protected with `prevent_destroy`.
 
 After deployment, Terraform prints the CloudFront URL and API endpoint. The
 frontend receives the API URL through a generated `config.js` object.

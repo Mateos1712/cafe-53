@@ -3,6 +3,7 @@
 *.tfstate.*
 *.tfplan
 terraform.tfvars
+backend.hcl
 __pycache__/
 *.pyc
 .pytest_cache/
