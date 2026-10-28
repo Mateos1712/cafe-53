@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Café 53, laboratorio serverless de AWS y Terraform." />
+    <title>Café 53 | Pedidos serverless</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">SERVERLESS COFFEE LAB</p>
+        <h1>Café <span>53</span></h1>
+        <p class="lede">
+          Un pedido pequeno que recorre una gran ruta por AWS: API Gateway,
+          Lambda, DynamoDB, EventBridge, SQS y SNS.
+        </p>
+      </section>
+
+      <section class="card" aria-labelledby="order-title">
+        <div class="card-heading">
+          <div>
+            <p class="step">01 / CREA TU PEDIDO</p>
+            <h2 id="order-title">¿Que preparamos?</h2>
+          </div>
+          <span class="status" id="api-status">Comprobando API...</span>
+        </div>
+
+        <form id="order-form">
+          <label>
+            Tu nombre
+            <input id="customer-name" name="customerName" maxlength="60" required placeholder="Andrea" />
+          </label>
+
+          <fieldset>
+            <legend>Bebida</legend>
+            <div class="choices">
+              <label><input type="radio" name="item" value="Espresso Route" checked /> Espresso Route</label>
+              <label><input type="radio" name="item" value="Lambda Latte" /> Lambda Latte</label>
+              <label><input type="radio" name="item" value="SQS Cold Brew" /> SQS Cold Brew</label>
+            </div>
+          </fieldset>
+
+          <label>
+            Tamano
+            <select name="size">
+              <option value="small">S3 / Chico</option>
+              <option value="medium" selected>M5 / Mediano</option>
+              <option value="large">R53 / Grande</option>
+            </select>
+          </label>
+
+          <button type="submit">Enviar por la nube</button>
+        </form>
+
+        <output id="result" class="result" aria-live="polite"></output>
+      </section>
+
+      <section class="journey" aria-labelledby="journey-title">
+        <p class="step">02 / SIGUE EL EVENTO</p>
+        <h2 id="journey-title">El recorrido de cada taza</h2>
+        <ol>
+          <li><strong>API Gateway</strong><span>recibe</span></li>
+          <li><strong>Lambda</strong><span>valida</span></li>
+          <li><strong>DynamoDB</strong><span>guarda</span></li>
+          <li><strong>EventBridge</strong><span>enruta</span></li>
+          <li><strong>SQS</strong><span>protege</span></li>
+          <li><strong>SNS</strong><span>avisa</span></li>
+        </ol>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+

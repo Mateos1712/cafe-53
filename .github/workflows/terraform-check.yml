@@ -1,0 +1,35 @@
+name: Terraform checks
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - "app/functions/**"
+      - ".github/workflows/terraform-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - "app/functions/**"
+      - ".github/workflows/terraform-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.13.3"
+      - name: Format
+        run: terraform -chdir=terraform fmt -check -recursive
+      - name: Initialize without a backend
+        run: terraform -chdir=terraform init -backend=false
+      - name: Validate
+        run: terraform -chdir=terraform validate
+      - name: Unit tests
+        run: python -m unittest discover -s app/functions -p "test_*.py"
+
